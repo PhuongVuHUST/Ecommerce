@@ -105,7 +105,7 @@
                           <label class="control-label col-sm-2" for="title">Select Color</label>
 
                           <div class="col-sm-10">
-                             <input id="color_edit" class="form-control" type="color" placeholder="Click to select a color">
+                             <input id="color_edit" class="form-control" type="color"  placeholder="Click to select a color">
                           </div>
                                                 
                         </div>
@@ -297,28 +297,33 @@
                             code: $('#color_edit').val(),
                         },
                         success: function(data) {
-                            $('.errorName').addClass('hidden');
-                            $('.errorDescription').addClass('hidden');
+                            console.log(data.data);
+                            colorTable.ajax.reload();
+                            // $('.errorName').addClass('hidden');
+                            // $('.errorDescription').addClass('hidden');
 
-                            if ((data.errors)) {
-                                setTimeout(function () {
-                                    $('#editModal').modal('show');
-                                    toastr.error('Validation error!', 'Error Alert', {timeOut: 5000});
-                                }, 500);
+                            // if ((data.errors)) {
+                            //     setTimeout(function () {
+                            //         $('#editModal').modal('show');
+                            //         toastr.error('Validation error!', 'Error Alert', {timeOut: 5000});
+                            //     }, 500);
 
-                                if (data.errors.name) {
-                                    $('.errorName').removeClass('hidden');
-                                    $('.errorName').text(data.errors.name);
-                                }
-                                if (data.errors.description) {
-                                    $('.errorDescription').removeClass('hidden');
-                                    $('.errorDescription').text(data.errors.description);
-                                }
-                            }else {
-                                toastr.success('Successfully edit color!', 'Success Alert', {timeOut: 5000});
-                                colorTable.ajax.reload();
-                            }
+                            //     if (data.errors.name) {
+                            //         $('.errorName').removeClass('hidden');
+                            //         $('.errorName').text(data.errors.name);
+                            //     }
+                            //     if (data.errors.description) {
+                            //         $('.errorDescription').removeClass('hidden');
+                            //         $('.errorDescription').text(data.errors.description);
+                            //     }
+                            // }else {
+                            //     toastr.success('Successfully edit color!', 'Success Alert', {timeOut: 5000});
+                            //     colorTable.ajax.reload();
+                            // }
                         },
+                        error: function(error){
+                            console.log(error);
+                        }
                     });
                 });
            

@@ -16,8 +16,26 @@
 // 	return view('welcome');
 // });
 Route::get('/', function(){
-	return view('test');
+	return view('page.home');
 });
+Route::get('shop', function(){
+	return view('page.shop');
+});
+Route::get('cart', function(){
+	return view('page.shoping_cart');
+});
+
+Route::get('images-upload', 'ImageController@imagesUpload');
+
+Route::post('images-upload', 'ImageController@imagesUploadPost')->name('images.upload');
+
+Route::get('image-view','ImageController@index');
+Route::post('image-view','ImageController@store');
+Route::get('image-gallery', 'ImageGalleryController@index');
+Route::post('image-gallery', 'ImageGalleryController@upload');
+Route::delete('image-gallery/{id}', 'ImageGalleryController@destroy');
+Route::resource('product', 'AdminProductController');
+Route::post('uploadImg', 'AdminUploadController@postImages');
 
 
 
@@ -48,7 +66,7 @@ Route::group(['prefix'=>'admin'],function(){
 				Route::get('index','ProductController@index')->name('product.index');
 				Route::get('anydata','ProductController@anydata')->name('product.anydata');
 				Route::get('show/{id}','ProductController@show')->name('product.show');
-				Route::get('{id_category}/anydataProductControllerListProduct','ProductController@anydataListProduct')->name('product.anydataListProduct');
+				Route::get('{id_product}/anydataListProduct','ProductController@anydataListProduct')->name('product.anydataListProduct');
 				Route::post('store','ProductController@store')->name('product.store');
 				Route::get('edit/{id}','ProductController@edit')->name('product.edit');
 				Route::post('update/{id}','ProductController@update')->name('product.update');
@@ -88,6 +106,17 @@ Route::group(['prefix'=>'admin'],function(){
 				Route::get('edit/{id}','ColorController@edit')->name('color.edit');
 				Route::post('update/{id}','ColorController@update')->name('color.update');
 				Route::delete('delete/{id}','ColorController@destroy')->name('color.delete');
+			});
+			// -------------SIZE------------------
+			Route::group(['prefix'=>'size'],function(){
+				Route::get('index','SizeController@index')->name('size.index');
+				Route::get('anydata','SizeController@anydata')->name('size.anydata');
+				Route::get('show/{id}','SizeController@show')->name('size.show');
+				Route::get('{id_color}/anydataListProduct','SizeController@anydataListProduct')->name('size.anydataListProduct');
+				Route::post('store','SizeController@store')->name('size.store');
+				Route::get('edit/{id}','SizeController@edit')->name('size.edit');
+				Route::post('update/{id}','SizeController@update')->name('size.update');
+				Route::delete('delete/{id}','SizeController@destroy')->name('size.delete');
 			});
     });
 		

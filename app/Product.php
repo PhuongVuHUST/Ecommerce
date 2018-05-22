@@ -16,11 +16,15 @@ class Product extends Model
     public function category() {
     	return $this->hasOne('App\Category', 'id', 'category_id');
     }
-     public function manufacture() {
+    public function manufacture() {
     	return $this->hasOne('App\Manufacture', 'id', 'manufacture_id');
     }
 
     public function product_detail(){
-    	return $this->hasONE('App\Product_Detail','product_id','id');
+    	return $this->hasOne('App\Product_Detail','product_id','id');
     }
+    public function image(){
+        return $this->hasMany('App\Gallary_image','product_id','id');
+    }
+    
 }

@@ -15,8 +15,8 @@ class CreateGallaryImagesTable extends Migration
     {
         Schema::create('gallary_images', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('product_id')->unsigned();
-            $table->foreign('product_id')->references('id')->on('products');
+            $table->integer('product_id');
+            // $table->foreign('product_id')->references('id')->on('products');
             $table->string('link')->nullable();
             $table->timestamps();
         });

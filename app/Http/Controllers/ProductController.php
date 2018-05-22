@@ -3,7 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreProduct;
+use Validator;
+use Response;
 use App\Product;
+use App\Category;
+use App\Manufacture;
+use App\Color;
+use App\Size;
+use Illuminate\Support\Facades\Storage;
+use App\Gallary_image;
+use App\Product_Detail;
 use Yajra\Datatables\Datatables;
 
 class ProductController extends Controller
@@ -15,9 +25,17 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products=Product::all();
-        return view('admin.products.index',[
+        $products=Product::orderBy('id', 'desc')->get();
+        $categories= Category::all();
+        $manufactures= Manufacture::all();
+        $colors= Color::all();
+        $sizes= Size::all();
+        return view('admin.products.index1',[
             'products' => $products,
+            'categories' => $categories,
+            'manufactures' => $manufactures,
+            'sizes' => $sizes,
+            'colors' => $colors,
         ]);
         // return view('admin.layouts.master');
     }
@@ -25,16 +43,13 @@ class ProductController extends Controller
     public function anyData()
     {
         return Datatables::of(Product::query())
-        ->addColumn('action', function ($product) {
-            return '<a href="" class="btn btn-xs btn-warning">
-                        <span class="glyphicon glyphicon-eye-open"></span>
-                    </a>
-                    <a href="" class="btn btn-xs btn-primary">
-                        <span class="glyphicon glyphicon-edit"></span>
-                    </a>
-                    <a href="" class="btn btn-xs btn-danger">
-                        <span class="glyphicon glyphicon-trash"></span>
-                    </a>';
+        ->addColumn('action', function ($products) {
+           return '<button href="" class="show-modal btn btn-success btn-detail" data-id="'.$products->id.'" data-title="'.$products->name.'"    data-content="{{$categories->description}}">
+                                        <span class="glyphicon glyphicon-eye-open"></span> </button>
+                                        <a href="" class="edit-modal btn btn-info" data-id="'.$products->id.'" data-title="'.$products->name.'" >
+                                        <span class="glyphicon glyphicon-edit"></span> </a>
+                                        <a href="" class="delete btn btn-danger" data-id="'.$products->id.'">
+                                        <span class="glyphicon glyphicon-trash"></span> </a>';
         })
         ->make(true);
     }
@@ -54,105 +69,76 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function addMorePost(Request $request)
+   
+    public function store(StoreProduct $request)
     {
-        $rules = [];
-
-
-        foreach($request->input('name') as $key => $value) {
-            $rules["name.{$key}"] = 'required';
-        }
-
-
-        $validator = Validator::make($request->all(), $rules);
-
-
-        if ($validator->passes()) {
-
-
-            foreach($request->input('name') as $key => $value) {
-                TagList::create(['name'=>$value]);
-            }
-
-
-            return response()->json(['success'=>'done']);
-        }
-
-
-        return response()->json(['error'=>$validator->errors()->all()]);
-    }
-    public function store(Request $request)
-    {
-        // $validator = Validator::make($request->all(), $this->rules);
-        // if ($validator->fails()) {
-        //     return Response::json(array('errors' => $validator->getMessageBag()->toArray()));
-        // } else {
-        //     $products = new Product();
-        //     $products->name = $request->name;
-        //     $products->status = $request->status;
-        //     $products->description = $request->description;
-        //     $products->save();
-
-        //     // var_dump($categories);
-        //     // die;
-        //     return response()->json($products);
-
+       
         date_default_timezone_set("Asia/Ho_Chi_Minh");
 
         $date = date("YmdHis", time());
 
         $data = $request->all(); //Để lấy dữ liệu từ phía người dùng nhập vào
 
-        $rules = [
-            'name' => 'required',
-            'description' => 'required',
-            'content' => 'required',
-            'status' => 'required',
-            'category_id' => 'required',
-            'manufacture_id' => 'required',
-            'image' => 'required|mimes:jpeg,png,jpg',
-        ];
 
-        $messages = [
-            'name.required' => 'Tên không được bỏ trống!',
-            'description.required' => 'Mô tả không được bỏ trống!',
-            'content.required' => 'Nội dung không được bỏ trống!',
-            'status.required' => 'Trạng thái không được bỏ trống!',
-            'category_id.required' => 'Danh mục không được bỏ trống!',
-            'manufacture_id.required' => 'Tên nhà cung cấp không được bỏ trống!',
-            'image.required' => 'Ảnh không được bỏ trống!',
-            'image.mimes' => 'Ảnh phải là ảnh (jpg, jpeg, png)!',
-        ];
-
-        $validator = Validator::make($data, $rules, $messages);
-
-        if ($validator->fails()) {
-
-            return redirect()->back()->withErrors($validator);
-        }
-
-        $data['categories_id'] = \Auth::category()->id;
-        $data['manufacture_id'] = \Auth::manufacture()->id;
 
         $data['slug'] = str_slug($data['name']);
+        $dataProduct = array();
+        $dataProduct['name'] =  $data['name'];
+        $dataProduct['category_id'] = $data['category_id'];
+        $dataProduct['manufacture_id'] = $data['manufacture_id'];
+        $dataProduct['origin_price'] = $data['origin_price'];
+        $dataProduct['slug'] = $data['slug'];
+        $dataProduct['description'] = $data['description'];
+        $dataProduct['content'] = $data['content'];
 
-        if ($request->hasFile('image')) {
+        $product = Product::create($dataProduct);
+        $details = $request->detail;
 
-            $extension = '.'.$data['image']->getClientOriginalExtension(); // Lấy ra đuôi ảnh của người dùng
-
-            // $file_name = md5($data['slug']).'_'. $date . $extension; // MD5 mã hóa theo slug của bài viết
-
-            $data['image']->storeAs('upload/thumbnails',$file_name); 
-
-            $data['image'] = 'upload/thumbnails/'.$file_name;
+        $dataDetail = array();
+        
+        //$product_detail->size_id = $data['size_id']; 
+        // $product_detail->product_id = $product->id; 
+        //$product_detail->color_id = $data['color_id']; 
+        //$product_detail->quantity = $data['quantity']; 
+        if (is_array($details) || is_object($details)){
+            foreach ($details as $detail) {
+                $product_detail  = new Product_Detail();
+                $size = $detail['size'];
+                $color = $detail['color'];
+                $qty = $detail['qty'];
+                $Size = Size::where('size',$size)->first();
+                $Color = Color::where('name',$color)->first();
+                if ($Size) {}
+                else{
+                    $Size = Size::create(['size'=>$size]);
+                }
+                $size_id = $Size->id;
+                if ($Color) {}
+                else{
+                    $Color = Color::create(['name'=>$color]);
+                }
+                $color_id = $Color->id;
+                    // ---
+                $product_detail->color_id = $color_id;
+                $product_detail->size_id = $size_id;
+                $product_detail->quantity = $qty;
+                $product_detail->product_id = $product->id;
+                
+                $product_detail->save();
+            }
+        } 
+        if($files=$request->file('image')){
+            return response()->json($files);
+            foreach($files as $key =>$file){
+                $temp = [];
+                $temp['link'] = Storage::disk('local')->put('public/images', $file);
+                $temp['name'] = $request['name'];
+                $temp['product_id'] = $product['id'];
+                Gallary_image::storeData($temp);
+            }
         }
-
-        $flag = Product::create($data);
-
-        // session()->flash('msg', '<script type="text/javascript">toastr.success("Thêm mới bài viết thành công! Vui lòng chờ bài viết được kiểm duyệt.")</script>');
-
-        return response()->json($data);
-        }
+        return response()->json(['data'], 200);
+    }
 
     /**
      * Display the specified resource.
@@ -162,7 +148,25 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        //
+        $product_details=Product_Detail::all();
+        $colors = Color::all();
+        $sizes = Size::all();
+        $products=Product::all();
+        return view('admin.products.listProduct',[
+            'products' => $products,
+            'sizes' => $sizes,
+            'colors' => $colors,
+            'product_details' => $product_details,
+        ]);
+    }
+     public function anydataListProduct($id_product){
+
+        return Datatables::of(Product_Detail::where('product_id', '=', $id_product)->with('code')->with('size'))
+        // ->addColumn('code', function () {
+        //     return'<input id="color" class="form-control" type="color" style="width: 20px" placeholder="Click to select a color" stype="width:20px;">';
+        // })
+        ->make(true);
+       
     }
 
     /**
@@ -173,7 +177,7 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        //
+        
     }
 
     /**
@@ -194,8 +198,15 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+        $id = $request->all()['product_id'];
+
+        
+        Product::destroy($id);
+
+        return \Response::json([
+            'error' => false,
+        ]);
     }
 }

@@ -37,6 +37,7 @@
 
     <!-- icheck checkboxes -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/skins/square/yellow.css">
+    
 
     <!-- toastr notifications -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
@@ -379,6 +380,16 @@
             <span class="pull-right-container">
             </span>
           </a>
+           <a href="{{ route('category.index') }}">
+            <i class="fa fa-dashboard"></i> <span>Product Management</span>
+            <span class="pull-right-container">
+            </span>
+          </a>
+           <a href="{{ route('category.index') }}">
+            <i class="fa fa-dashboard"></i> <span>Size Management</span>
+            <span class="pull-right-container">
+            </span>
+          </a>
         
         </li>
       </ul>
@@ -655,21 +666,12 @@
 <script src="{{ asset('bower_components/fastclick/lib/fastclick.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ asset('dist/js/adminlte.min.js') }}"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/validator/10.2.0/validator.min.js"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 {{-- <script src="{{ asset('dist/js/pages/dashboard.js') }}"></script> --}}
 <!-- AdminLTE for demo purposes -->
 <script src="{{ asset('dist/js/demo.js') }}"></script>
-{{-- <script>
-  $(function () {
-    //color picker with addon
-    $('.my-colorpicker2').colorpicker()
 
-  })
-</script>
-<div class="colorpicker dropdown-menu colorpicker-hidden colorpicker-with-alpha colorpicker-right"><div class="colorpicker-saturation"><i><b></b></i></div><div class="colorpicker-hue"><i></i></div><div class="colorpicker-alpha"><i></i></div><div class="colorpicker-color"><div></div></div><div class="colorpicker-selectors"></div></div>
-    <div class="colorpicker dropdown-menu colorpicker-hidden colorpicker-with-alpha colorpicker-right"><div class="colorpicker-saturation"><i><b></b></i></div><div class="colorpicker-hue"><i></i></div><div class="colorpicker-alpha"><i></i></div><div class="colorpicker-color"><div></div></div><div class="colorpicker-selectors"></div></div>
- --}}
-{{-- <script type="text/javascript" src="{{ asset('css/dist/sweetalert.min.js') }}"></script> --}}
 	@yield('footer.js')
 </body> 
 

@@ -1,7 +1,10 @@
+
 @extends('admin.layouts.master')
 @section('header.css')
 	<link rel="stylesheet" href="{{ asset('http://cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css') }}">
+	<link rel='stylesheet' href='https://cdn.rawgit.com/t4t5/sweetalert/v0.2.0/lib/sweet-alert.css'>
 @endsection
+
 @section('content')
 	<a class="btn btn-lg btn-info add-modal" style="margin-bottom: 30px" href="" data-toggle="modal" data-target="#create-item"><span class="glyphicon glyphicon-plus"></a>
 
@@ -27,10 +30,10 @@
 			                              	@endif
 			                          	</div>
 			                          	<div class="form-group">
-			                              	<label for="">Status (<span style="color: red">*</span>)</label>
-			                              	<input type="text" class="form-control" id="status" placeholder="Status" name="status">
-			                              	@if ($errors->has('status'))
-			                                  	<span class="errors">{{$errors->first('status')}}</span>
+			                              	<label for="">Origin Price (<span style="color: red">*</span>)</label>
+			                              	<input type="number" class="form-control" id="origin_price" placeholder="Origin Price" name="origin_price">
+			                              	@if ($errors->has('origin_price'))
+			                                  	<span class="errors">{{$errors->first('origin_price')}}</span>
 			                              	@endif
 			                          </div>
 			                          	<div class="form-group">
@@ -40,9 +43,43 @@
 			                                  	<span class="errors">{{$errors->first('description')}}</span>
 			                              	@endif
 			                          	</div>
+                                            {{-- categories --}}
+                                        <div class="portlet light bordered">
+                                            <div class="portlet-title">
+                                                <div class="caption">
+                                                    <i class="fa fa-list font-green" aria-hidden="true"></i>
+                                                    <span class="caption-subject font-green bold">Category</span>
+                                                </div>
+                                            </div>
+                                            <div class="portlet-body">
+                                                <select class="form-control category" name="category_id" >
+                                                    {{-- <option value=""></option> --}}
+                                                  @if (count($categories)>0) @foreach ($categories as $category)
+                                                      <option value="{{$category->id}}">{{$category->name}}</option>
+                                                  @endforeach @endif
+                                                </select>
+                                             </div>
+                                        </div>
+                                        {{-- manufacture --}}
+                                        <div class="portlet light bordered">
+                                            <div class="portlet-title">
+                                                <div class="caption">
+                                                    <i class="fa fa-list font-green" aria-hidden="true"></i>
+                                                    <span class="caption-subject font-green bold">Manufacture</span>
+                                                </div>
+                                            </div>
+                                            <div class="portlet-body">
+                                                <select class="form-control manufacture" name="manufacture_id">
+                                                    {{-- <option value=""></option> --}}
+                                                  @if (count($manufactures)>0) @foreach ($manufactures as $manufacture)
+                                                      <option value="{{$manufacture->id}}">{{$manufacture->name}}</option>
+                                                  @endforeach @endif
+                                                </select>
+                                             </div>
+                                        </div>
 			                           	<div class="form-group">
 			                                    <label for="">Content (<span style="color: red">*</span>)</label>
-			                                    <textarea class="form-control" name="content" id="content" cols="30" rows="10" placeholder="Content" class="ckeditor" name="editor"></textarea> 
+			                                    <textarea class="form-control" name="content" id="content" cols="30" rows="10" placeholder="Content" class="ckeditor" name="content"></textarea> 
 			                                    @if ($errors->has('content'))
 			                                        <span class="errors">{{$errors->first('content')}}</span>
 			                                    @endif
@@ -50,119 +87,85 @@
 			                      		</div>
 
 			                      	<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                        {{-- content --}}
+                                        <div class="form-group">
+                                                <label for="">Content (<span style="color: red">*</span>)</label>
+                                                <textarea class="form-control" name="content" id="content" cols="30" rows="10" placeholder="Content" class="ckeditor" name="content"></textarea> 
+                                                @if ($errors->has('content'))
+                                                    <span class="errors">{{$errors->first('content')}}</span>
+                                                @endif
+                                            </div>
+                                        </div>
 			                          
-			                          {{-- categories --}}
-			                          	<div class="portlet light bordered">
-			                              	<div class="portlet-title">
-			                                  	<div class="caption">
-			                                      	<i class="fa fa-list font-green" aria-hidden="true"></i>
-			                                      	<span class="caption-subject font-green bold">Category</span>
-			                                  	</div>
-			                              	</div>
-			                              	<div class="portlet-body">
-			                                  	<select class="form-control" name="category_id">
-			                                  		<option value=""></option>
-			                                     {{--  @if (count($categories)>0) @foreach ($categories as $category)
-			                                          <option value="{{$category->id}}">{{$category->name}}</option>
-			                                      @endforeach @endif --}}
-			                                  	</select>
-			                             	 </div>
-			                          	</div>
-			                          	{{-- manufacture --}}
-			                          		<div class="portlet light bordered">
-			                              	<div class="portlet-title">
-			                                  	<div class="caption">
-			                                      	<i class="fa fa-list font-green" aria-hidden="true"></i>
-			                                      	<span class="caption-subject font-green bold">Manufacture</span>
-			                                  	</div>
-			                              	</div>
-			                              	<div class="portlet-body">
-			                                  	<select class="form-control" name="manufacture_id">
-			                                  		<option value=""></option>
-			                                      {{-- @if (count($manufactures)>0) @foreach ($manufactures as $manufacture)
-			                                          <option value="{{$manufacture->id}}">{{$manufacture->name}}</option>
-			                                      @endforeach @endif --}}
-			                                  	</select>
-			                             	 </div>
-			                          	</div>
-			                          {{-- featured image  --}}
-			                          	<div class="portlet light bordered">
-			                              	<div class="portlet-title">
-			                                  	<div class="caption">
-			                                      	<i class="fa fa-picture-o font-green" aria-hidden="true"></i>
-			                                      	<span class="caption-subject font-green bold">Image</span>
-			                                  	</div>
-			                              	</div>
-			                              	<div class="portlet-body">
-			                                   	<div class="fileinput fileinput-new" data-provides="fileinput">
-			                                      	<div class="fileinput-new thumbnail" style="width: 250px; height: 200px;">
-			                                          	<img id="previewimg" src="" alt="No Image" /> </div>
-			                                      	<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 250px; max-height: 200px;"> </div>
-			                                      	<div style="margin-top: 10px;">
-			                                          	<span class="input-group-btn">
-			                                            <a id="lfm" data-input="thumbnail" data-preview="previewimg" class="btn btn-primary">
-			                                             	<input type="file" name="image">
-			                                            </a>
-			                                         	 </span>
-			                                          	@if ($errors->has('image'))
-			                                              	<span class="errors">{{$errors->first('image')}}</span>
-			                                          	@endif
-			                                      	</div>
-			                                  	</div>
-			                              	</div>
-			                          	</div>
+			                      
+			                         {{-- image --}}
+			                              	
+			                          		<img id="holder" name="holder" style="margin-top:15px;max-height:100px;">
+			                          {{-- 	</div> --}}
+										<div class="input-group">
+										   <span class="input-group-btn">
+											    <a id="lfm" data-input="thumbnail" data-preview="holder" class="btn btn-primary">
+											       	<i class="fa fa-picture-o"></i> Choose
+											    </a>
+										   </span>
+										   <input id="thumbnail" class="form-control" type="text" name="filepath">
+										 </div>
+										
+											
 
 			                          	{{-- size color quantity --}}
 			                          	<div class="alert alert-danger print-error-msg" style="display:none">
 								            <ul></ul>
-								            </div>
-
-
-								            <div class="alert alert-success print-success-msg" style="display:none">
+								        </div>
+								        <div class="alert alert-success print-success-msg" style="display:none">
 								            <ul></ul>
-								            </div>
-
-
-								            <div class="table-responsive">  
-								                <table class="table table-bordered" style="border: none;" id="dynamic_field">  
-								                	<tr>
-											       	<th>Size</th>
-											       	<th>Color</th>
-											       	<th>Select Unit</th>
-											        <td><button type="button" name="add" id="add" class="btn btn-success">
-											        	<span class="glyphicon glyphicon-plus"></span>
-											        </button></td> 
-										    	</tr>
-								                    
-								                </table>  
-								                <input type="button" name="submit" id="submit" class="btn btn-info" value="Submit" />  
-								            </div>
-
-			                          	{{-- -- --}}
-			                          	{{-- <div class="table-repsonsive">
-										    <span id="error"></span>
-										    <table class="table table-bordered" id="item_table">
-										      	<tr>
-											       	<th>Enter Item Name</th>
-											       	<th>Enter Quantity</th>
-											       	<th>Select Unit</th>
-											       	<th><button type="button" name="add" class="btn btn-success btn-sm add_product_detail"><span class="glyphicon glyphicon-plus"></span></button></th>
-										    	</tr>
-										    </table>
-										    <div align="center">
-										      	<input type="submit" name="submit" class="btn btn-info" value="Insert" />
-										    </div>
-										</div> --}}
-			           
-			                      </div>
-			                  </div>
+								        </div>
+							          
+							            <div class="portlet-body " id="divadd">
+                                        <table>  
+                                            <tr>
+                                               <td>Color</td>
+                                                <td>Size</td>
+                                                <td>Quantity</td>
+                                            </tr>
+                                            <tr id="row1">
+                                                <td>
+                                                    <select class="form-control" name="color_id-1[]">
+                                                        @if (count($colors)>0) @foreach ($colors as $color)
+                                                        <option value="{{$color->id}}">{{$color->name}}</option>
+                                                        @endforeach 
+                                                        @endif
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control" name="size_id-1[]">
+                                                        @if (count($sizes)>0) @foreach ($sizes as $size)
+                                                        <option value="{{$size->id}}">{{$size->size}}</option>
+                                                        @endforeach 
+                                                        @endif
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="quantity-1" class="form-control" style="width:100px">
+                                                </td>
+                                                <td><p class="btn btn-primary" id="addabc">+</p></td>
+                                             
+                                            </tr>
+                                            
+                                        </table>
+                                    </div>
+							           {{--  <div>
+							            	 <input type="checkbox" class="published" data-id="" checked="">
+							            </div> --}}	
+			                      	</div>
+			                  	</div>
 			              
 	          				</div>
 	                        </div>
 	                    </div>
                     </form>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-success add" data-dismiss="modal">
+                        <button type="button" class="btn btn-success add" data-dismiss="modal" id="submit">
                             <span id="" class='glyphicon glyphicon-check'></span> Add
                         </button>
                         <button type="button" class="btn btn-warning" data-dismiss="modal">
@@ -173,6 +176,37 @@
             </div>
         </div>
     </div>
+      <!-- Modal form to show all product detail -->
+    <div id="showModal" class="modal fade" role="dialog" >
+        <div class="modal-dialog modal-lg" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-hover"  id="productlist-table">
+                            <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Size</th>
+                                <th>Color</th>
+                                <th>Quantity</th>
+                                <th>Created_at</th>
+                            </tr>
+                            </thead>
+                    </table>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-warning" data-dismiss="modal">
+                            <span class='glyphicon glyphicon-remove'></span> Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal form to edit a product -->
+ 
 	<table class="table table-hover" id="products-table">
 
 		<thead>
@@ -181,7 +215,6 @@
 				<th>Name</th>
 				<th>Slug</th>
 				<th>Description</th>
-				<th>Sale_price</th>
 				<th>Origin_price</th>
 				<th>Created_at</th>
 				<th>Action</th>
@@ -193,7 +226,15 @@
 @section('footer.js')
 	<script src="http://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/tinymce.min.js"></script>
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/jquery.tinymce.min.js"></script>
+  	<script src="http://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/jquery.tinymce.min.js"></script>
+  	
+  <!-- toastr notifications -->
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+    <script src="{{ asset('/vendor/laravel-filemanager/js/lfm.js') }}"></script>
+     <script type="text/javascript">
+	 	$('#lfm').filemanager('image');
+	 </script>
 	{{-- <script type="text/javascript" src="{{ asset('js/product.js') }}"></script> --}}
 	<script>
 		$(function() {
@@ -207,7 +248,6 @@
 		            { data: 'name', name: 'name' },
 		            { data: 'slug', name: 'slug' },
 		            { data: 'description', name: 'description' },
-		            { data: 'sale_price', name: 'sale_price' },
 		            { data: 'origin_price', name: 'origin_price' },
 		            { data: 'created_at', name: 'created_at' },
 		            { data: 'action', name: 'action' }
@@ -216,20 +256,40 @@
 
 		    // add a product
 
-		     $(document).on('click', '.add-modal', function() {
+		    $(document).on('click', '.add-modal', function() {
                 $('.modal-title').text('Add');
                 $('#addModal').modal('show');
             });
             $('.modal-footer').on('click', '.add', function() {
 
-                var content = tinymce.get("textarea_content").getContent();
+              
+               	 
+                var description = jQuery("textarea#description").val();
+                var selectedCategory = $(".category option:selected").val();
+                var selectedManufacture = $(".manufacture option:selected").val();
+                var selectedSize = $(".size option:selected").val();
+                var selectedColor = $(".color option:selected").val();
+                // var content = CKEDITOR.instances.content.getData();
+                var content = tinymce.get("content").getContent();
+                // ->getClientOriginalExtension()
+               
+                console.log($('#thumbnail').val());
+
                 $.ajax({
                     type: 'POST',
                     url: '{{ route('product.store') }}',
                     data: {
                         _token: $('input[name=_token]').val(),
-                        name: $('#name_add').val(),
-                        description: content,
+                        name: $('#name').val(),
+                        image: $('#thumbnail').val(),
+                        description: description,
+                        content:content,
+                        origin_price:$('#origin_price').val(),
+                        quantity:$('#quantity').val(),
+                        category_id : selectedCategory,
+                        manufacture_id : selectedManufacture,
+                        size_id : selectedSize,
+                        color_id : selectedColor,
                     },
                     success: function(data) {
                         $('.errorName').addClass('hidden');
@@ -256,125 +316,226 @@
                     },
                 });
             });
-		});
-</script>
+            // show detail product
+             $(document).on('click', '.show-modal', function() {
+                $('.modal-title').text('Show');
+                $('#showModal').modal('show');
 
-<script type="text/javascript">
-    $(document).ready(function(){      
-      var postURL = '{{ asset('admin/product/store') }}';
-      var i=1;  
+                var id = $(this).attr('data-id');
+                console.log(id);
+                var url = '{{ asset('admin/product') }}'+'/' + id +'/anydataListProduct';
+                $('#productlist-table').DataTable({
+                	
+                    processing: true,
+                    serverSide: true,
+                    "destroy": true,
+                    ajax: url,
+                    columns: [ 
+                        { data: 'id', name: 'id' },
+                        { data: 'size.size', name: 'size' },
+                        { data: 'color.code', name: 'color' },
+                        { data: 'quantity', name: 'quantity' },
+                        { data: 'created_at', name: 'created_at' },
+                    ]
+                });
+            });
+             // edit product
+              $('#category-table').on('click', '.edit-modal', function(e){
+                e.preventDefault();
+            });
+
+            $(document).on('click', '.edit-modal', function() {
+                $('.modal-title').text('Edit');
+                $('#editModal').modal('show');
+                var id = $(this).attr('data-id');
+               	var description = jQuery("textarea#description_edit").val();
+                var content = tinymce.get("content_edit").getContent();
+                var selectedCategory = $("#category_id_edit option:selected").val();
+                var selectedManufacture = $("#manufacture_id_edit  option:selected").val();
+                var selectedSize = $("#size_edit option:selected").val();
+                var selectedColor = $("#color_edit option:selected").val();
+                var url = '{{ asset('admin/product/edit') }}'+'/' + id;
 
 
-      $('#add').click(function(){  
-           i++;  
-           $('#dynamic_field').append('<tr id="row'+i+'" class="dynamic-added"><td><select class="form-control" name="name[]"  class="form-control name_list"><option value=""></option></select></td><td><select class="form-control" name="name[]"  class="form-control name_list"><option value=""></option></select></td><td><input type="text" name="name[]" placeholder="Enter your Name" class="form-control name_list" /></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn_remove"><span class="glyphicon glyphicon-minus"></span></button></td></tr>');  
-      });  
-
-
-      $(document).on('click', '.btn_remove', function(){  
-           var button_id = $(this).attr("id");   
-           $('#row'+button_id+'').remove();  
-      });  
-
-
-      $.ajaxSetup({
-          headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-          }
-      });
-
-
-      $('#submit').click(function(){            
-           $.ajax({  
-                url:postURL,  
-                method:"POST",  
-                data:$('#add_name').serialize(),
-                type:'json',
-                success:function(data)  
-                {
-                    if(data.error){
-                        printErrorMsg(data.error);
-                    }else{
-                        i=1;
-                        $('.dynamic-added').remove();
-                        $('#add_name')[0].reset();
-                        $(".print-success-msg").find("ul").html('');
-                        $(".print-success-msg").css('display','block');
-                        $(".print-error-msg").css('display','none');
-                        $(".print-success-msg").find("ul").append('<li>Record Inserted Successfully.</li>');
+                $.ajax({
+                    type: 'get',
+                    url: url,
+                    success: function(response){
+                        $('#name_edit').val(response.name); 
+                        $('#thumbnail_edit').val(response.image); 
+                        $('#origin_price_edit').val(response.name); 
+                        $(description).val(response.description); 
+                        $(selectedCategory).val(response.category); 
+                        $(selectedManufacture).val(response.manufacture); 
+                        $(selectedSize).val(response.size); 
+                        $(selectedColor).val(response.color); 
+                        $(description).val(response.description); 
+                       tinymce.get("edit_textarea_content").setContent(response.content);
+                        
                     }
-                }  
-           });  
-      });  
+                })
 
+                $('.modal-footer').on('click', '.edit', function() {
 
-      function printErrorMsg (msg) {
-         $(".print-error-msg").find("ul").html('');
-         $(".print-error-msg").css('display','block');
-         $(".print-success-msg").css('display','none');
-         $.each( msg, function( key, value ) {
-            $(".print-error-msg").find("ul").append('<li>'+value+'</li>');
-         });
-      }
-    });  
-</script>
+                    var content = tinymce.get("edit_textarea_content").getContent();
 
+                    var url = '{{ asset('admin/category/update') }}'+'/' + id;
+                    $.ajax({
+                        type: 'POST',
+                        url: url,
+                        data: {
+                            _token: $('input[name=_token]').val(),
+                            name: $('#name_edit').val(),
+                            description: content,
+                        },
+                        success: function(data) {
+                            $('.errorName').addClass('hidden');
+                            $('.errorDescription').addClass('hidden');
 
+                            if ((data.errors)) {
+                                setTimeout(function () {
+                                    $('#editModal').modal('show');
+                                    toastr.error('Validation error!', 'Error Alert', {timeOut: 5000});
+                                }, 500);
 
-<script>
+                                if (data.errors.name) {
+                                    $('.errorName').removeClass('hidden');
+                                    $('.errorName').text(data.errors.name);
+                                }
+                                if (data.errors.description) {
+                                    $('.errorDescription').removeClass('hidden');
+                                    $('.errorDescription').text(data.errors.description);
+                                }
+                            } else {
+                                toastr.success('Successfully edit Category!', 'Success Alert', {timeOut: 5000});
+                                colorTable.ajax.reload();
+                            }
+                        },
+                    });
+                });
+           
+            });
 
-    tinymce.init({
-    selector: 'textarea',
-    height: 200,
-    theme: 'modern',
-    menubar: false,
-    autosave_ask_before_unload: false,
-    plugins: [
-      "advlist autolink link image lists charmap print preview hr anchor pagebreak",
-      "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
-      "table contextmenu directionality emoticons template textcolor paste textcolor colorpicker textpattern codesample"
-    ],
-    toolbar1: "newdocument | forecolor backcolor cut copy paste bullist numlist bold italic underline strikethrough| alignleft aligncenter alignright alignjustify | styleselect formatselect fontselect fontsizeselect  | searchreplace  | outdent indent | undo redo | link unlink anchor code | insertdatetime preview | table | hr removeformat | subscript superscript | charmap emoticons | print fullscreen | codesample",
-    image_advtab: true,
-    content_css: [
-      '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
-      '//www.tinymce.com/css/codepen.min.css'
-    ],
-    setup: function (ed) {
-        ed.on('init', function (e) {
-            ed.execCommand("fontName", false, "Tahoma");
+             // delete product
+          	$('#products-table').on('click', '.delete', function(e){
+                e.preventDefault();
+            });
+            $('#products-table').on('click', '.btn-danger', function(e){
+                e.preventDefault();
+                var id = $(this).attr('data-id');
+                var url = '{{ asset('admin/product/delete') }}'+'/' + id;
+                swal({
+                  dangerMode: true,
+                  title: "Bạn có muốn xóa viết này không?",
+                  icon: "warning",
+                  buttons: {
+                    cancel: 'Hủy',
+                    confirm: 'Xóa'
+                  }
+                })
+                .then((willDelete) => {
+                    if (willDelete) {
+                       
+                        $.ajax({
+                            type: "delete",
+                            url: url,
+                            data: {
+                                product_id : id,
+                            },
+                            success: function(res)
+                            {
+                                if(!res.error) {
+                                     
+                                    toastr.success('Sản Phẩm đã được xóa!');
+                                    colorTable.ajax.reload();   
+                                }
+                            },
+                            error: function (xhr, ajaxOptions, thrownError) {
+                                toastr.error(thrownError);
+
+                            }
+                        });
+                    } else {
+                        swal("Bạn đã hủy xóa bài viết!");
+                    }
+                });
+
+       
+            });
+		});
+	</script>
+	<script type="text/javascript">
+		var i=1;  
+         $('#addabc').click(function(){  
+           i++;  
+           $('#divadd').append(' <table ><tr class="dynamic-added" id="'+i+'"><td>Color</td><td>Size</td><td>Quantity</td></tr><tr class="addProduct"><td><select class="form-control" name="color_id-'+i+'">@if (count($colors)>0) @foreach ($colors as $color)<option value="{{$color->id}}">{{$color->name}}</option>@endforeach @endif </select></td><td><select class="form-control" name="size_id-'+i+'">@if (count($sizes)>0) @foreach ($sizes as $size)<option value="{{$size->id}}">{{$size->size}}</option>@endforeach @endif </select></td><td><input type="number" name="quantity-'+i+'" class="form-control" style="width:100px"></td><td><button type="button" name="remove" class="btn btn-danger btn_remove1" id="remove-tr'+i+'" data-id="'+i+'"><span class="glyphicon glyphicon-minus" id="remove-tr'+i+'"></span></button></td></tr></table>');  
+
         });
-    },
-    relative_urls: false,
-    remove_script_host : false,
-    file_browser_callback : function(field_name, url, type, win) {
-      var x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth;
-      var y = window.innerHeight|| document.documentElement.clientHeight|| document.getElementsByTagName('body')[0].clientHeight;
 
-      var cmsURL = route_prefix + 'laravel-filemaneger?field_name=' + field_name;
-      if (type == 'image') {
-        cmsURL = cmsURL + "&type=Images";
-      } else {
-        cmsURL = cmsURL + "&type=Files";
-      }
 
-      tinyMCE.activeEditor.windowManager.open({
-        file : cmsURL,
-        title : 'Image manager',
-        width : x * 0.8,
-        height : y * 0.8,
-        resizable : "yes",
-        close_previous : "no"
-      });
-    }
-   });
 
-    $('#post-create').on('keyup keypress', function(e) {
-      var keyCode = e.keyCode || e.which;
-      if (keyCode === 13) { 
-        e.preventDefault();
-        return false;
-      }
-    });
-</script>
+        $(document).on('click', '.btn_remove1', function(){  
+            console.log("");
+            $(this).parents('table').remove(); 
+        });
+	</script>
+
+
+
+	<script>
+
+	    tinymce.init({
+	    selector: '#content',
+	    height: 200,
+	    theme: 'modern',
+	    menubar: false,
+	    autosave_ask_before_unload: false,
+	    plugins: [
+	      "advlist autolink link image lists charmap print preview hr anchor pagebreak",
+	      "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
+	      "table contextmenu directionality emoticons template textcolor paste textcolor colorpicker textpattern codesample"
+	    ],
+	    toolbar1: "newdocument | forecolor backcolor cut copy paste bullist numlist bold italic underline strikethrough| alignleft aligncenter alignright alignjustify | styleselect formatselect fontselect fontsizeselect  | searchreplace  | outdent indent | undo redo | link unlink anchor code | insertdatetime preview | table | hr removeformat | subscript superscript | charmap emoticons | print fullscreen | codesample",
+	    image_advtab: true,
+	    content_css: [
+	      '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
+	      '//www.tinymce.com/css/codepen.min.css'
+	    ],
+	    setup: function (ed) {
+	        ed.on('init', function (e) {
+	            ed.execCommand("fontName", false, "Tahoma");
+	        });
+	    },
+	    relative_urls: false,
+	    remove_script_host : false,
+	    file_browser_callback : function(field_name, url, type, win) {
+	      var x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth;
+	      var y = window.innerHeight|| document.documentElement.clientHeight|| document.getElementsByTagName('body')[0].clientHeight;
+
+	      var cmsURL = route_prefix + 'laravel-filemaneger?field_name=' + field_name;
+	      if (type == 'image') {
+	        cmsURL = cmsURL + "&type=Images";
+	      } else {
+	        cmsURL = cmsURL + "&type=Files";
+	      }
+
+	      tinyMCE.activeEditor.windowManager.open({
+	        file : cmsURL,
+	        title : 'Image manager',
+	        width : x * 0.8,
+	        height : y * 0.8,
+	        resizable : "yes",
+	        close_previous : "no"
+	      });
+	    }
+	   });
+
+	    $('#post-create').on('keyup keypress', function(e) {
+	      var keyCode = e.keyCode || e.which;
+	      if (keyCode === 13) { 
+	        e.preventDefault();
+	        return false;
+	      }
+	    });
+	</script>
 @endsection

@@ -39,7 +39,7 @@ class CategoryController extends Controller
                                         <span class="glyphicon glyphicon-eye-open"></span> </a>
                                         <a href="" class="edit-modal btn btn-info" data-id="'.$categories->id.'" data-title="'.$categories->name.'" data-content="{{$categories->description}}">
                                         <span class="glyphicon glyphicon-edit"></span> </a>
-                                        <a href="" class="delete btn btn-danger" data-id="'.$categories->id.'" data-content="'.$categories->description.'">
+                                        <a href="" class="delete btn btn-danger" data-id="'.$categories->id.'">
                                         <span class="glyphicon glyphicon-trash"></span> </a>';
         })
         ->rawColumns(['description','action'])

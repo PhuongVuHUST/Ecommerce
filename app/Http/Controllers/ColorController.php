@@ -8,6 +8,7 @@ use Validator;
 use Response;
 use App\Color;
 use App\Product;
+use App\Http\Requests\StoreColor;
 
 class ColorController extends Controller
 {
@@ -115,16 +116,16 @@ class ColorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreColor $request, $id)
     {
-        $validator = Validator::make($request->all(), $this->rules);
-        if ($validator->fails()) {
-            return Response::json(array('errors' => $validator->getMessageBag()->toArray()));
-        } else {
-            $colors = Color::findOrFail($id);
-            $update = $colors->update($request->all());
-            return response()->json($update);
-        }
+
+        // $colors = Color::findOrFail($id);
+        // $update = $colors->update($request->all());
+        $data['name'] = $request->input('name');
+        $data['code'] = $request->input('code');
+
+        $colors = Color::where('id', $id)->update($data);
+        return response()->json($colors);
     }
 
     /**
