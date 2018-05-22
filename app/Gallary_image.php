@@ -13,4 +13,8 @@ class Gallary_image extends Model
     public function product(){
     	return $this->belongsTo()('App\Product','product_id','id');
     }
+
+    public static function storeData($data) {
+    	return Gallary_image::create($data);
+    }
 }

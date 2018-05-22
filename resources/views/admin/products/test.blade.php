@@ -1,10 +1,9 @@
 
 @extends('admin.layouts.master')
 @section('header.css')
-    <link rel="stylesheet" href="{{ asset('http://cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css') }}">
+    {{-- <link rel="stylesheet" href='http://cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css'> --}}
     <link rel='stylesheet' href='https://cdn.rawgit.com/t4t5/sweetalert/v0.2.0/lib/sweet-alert.css'>
-      <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.7/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
-      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/dropzone.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.7/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
       <style type="text/css">
         .main-section{
             margin:0 auto;
@@ -22,9 +21,14 @@
 @endsection
 
 @section('content')
+<datalist id="list_colors">
+    @foreach ($colors as $colors)
+        <option value="{{$colors->name}}"></option> 
+    @endforeach
+</datalist>
     <a class="btn btn-lg btn-info add-modal" style="margin-bottom: 30px" href="" data-toggle="modal" data-target="#create-item"><span class="glyphicon glyphicon-plus"></a>
 
-    <div id="addModal" class="modal fade" role="dialog">
+    <div id="modal_add_abc" class="modal fade" role="dialog">
         <div class="modal-dialog" style="width: 1100px">
             <div class="modal-content">
                 <div class="modal-header">
@@ -51,7 +55,7 @@
                                             @if ($errors->has('origin_price'))
                                                 <span class="errors">{{$errors->first('origin_price')}}</span>
                                             @endif
-                                      </div>
+                                        </div>
                                         <div class="form-group">
                                             <label for="">Description (<span style="color: red">*</span>)</label>
                                             <textarea class="form-control" name="description" id="description" cols="30" rows="4" placeholder="Description"></textarea> 
@@ -61,13 +65,13 @@
                                         </div>
                                         <div class="form-group">
                                                 <label for="">Content (<span style="color: red">*</span>)</label>
-                                                <textarea class="form-control" name="content" id="content" cols="30" rows="10" placeholder="Content" class="ckeditor" name="content"></textarea> 
+                                                 <textarea name="txtContent" class="form-control " id="editor1"></textarea>
                                                 @if ($errors->has('content'))
                                                     <span class="errors">{{$errors->first('content')}}</span>
                                                 @endif
-                                            </div>
                                         </div>
-
+                                        
+                                    </div>
                                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                       
                                       {{-- categories --}}
@@ -108,27 +112,18 @@
                                             
                                         {{-- image --}}
                                         {{-- <div class="row"> --}}
-                                           {{--  <div class=" main-section" style="width: 440px ; margin-left: 30px; margin-top: 30px; margin-bottom: 30px"> --}}
-                                                {{-- <h1 class="text-center text-danger">File Input Example</h1><br>
-                                                
-                                                    {!! csrf_field() !!} --}}
-                                                  {{--   <div class="form-group">
-                                                        <div class="file-loading">
-                                                            <input id="file-1" type="file" name="file" multiple class="file" data-overwrite-initial="false" data-min-file-count="2">
-                                                        </div>
-                                                    </div>
-                                                
-                                            </div> --}}
-                                  {{--       </div> --}}
-                                  {{-- image-demo --}}
-                                   <div >
-                                        <div class="dropzone" id="my-dropzone" name="myDropzone">
-
-                                        </div>
-                                    </div>
-                                </div>
-                                        
+                                        <div class=" main-section" style="width: 440px ; margin-left: 30px; margin-top: 30px; margin-bottom: 30px">
+                                            {{-- <h1 class="text-center text-danger">File Input Example</h1><br>
                                             
+                                                {!! csrf_field() !!} --}}
+                                                <div class="form-group">
+                                                    <div class="file-loading">
+                                                        <input id="file-1" type="file" name="file[]" multiple class="file" data-overwrite-initial="false" data-min-file-count="2">
+                                                    </div>
+                                                </div>
+                                            
+                                        </div>
+                                    </div>  
 
                                         {{-- size color quantity --}}
                                         <div class="alert alert-danger print-error-msg" style="display:none">
@@ -150,27 +145,15 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr class="dynamic-added" id="row-1">
-                                                        <td>
-                                                            <select class="form-control size" name="size[]" id="size_id"  class="form-control name_list">
-                                                                @if (count($sizes)>0) 
-                                                                    @foreach ($sizes as $size)
-                                                                        <option value="{{$size->id}}">{{$size->size}}</option> 
-                                                                    @endforeach
-                                                                @endif
-                                                            </select>
+                                                    <tr class="dynamic-added" id="row-1" data-number ="1">
+                                                        <td>                                                
+                                                            <input type="number" class="form-control size name_list" id="size_1_id">
                                                         </td>
                                                         <td>
-                                                            <select class="form-control color" name="color[]" id="color_id" class="form-control name_list">
-                                                                @if (count($colors)>0) 
-                                                                    @foreach ($colors as $colors)
-                                                                        <option value="{{$colors->id}}">{{$colors->name}}</option> 
-                                                                    @endforeach
-                                                                @endif
-                                                            </select>
+                                                            <input type="text" class="form-control color name_list" id="color_1_id" list="list_colors">
                                                         </td>
                                                         <td>
-                                                            <input type="number" name="quantity[]" id="quantity" placeholder="Enter your Quantity" class="form-control name_list" />
+                                                            <input type="number" name="quantity[]" id="quantity_1" placeholder="Enter your Quantity" class="form-control name_list" />
                                                         </td>
                                                         <td><button type="button" name="remove" class="btn btn-danger btn_remove1" id="remove-tr'+i+'" data-id="'+i+'"><span class="glyphicon glyphicon-minus" id="remove-tr'+i+'"></span></button></td>
                                                     </tr>
@@ -183,7 +166,6 @@
                                     </div>
                                 </div>
                           
-                            </div>
                             </div>
                         </div>
                     </form>
@@ -248,20 +230,28 @@
 @endsection
 @section('footer.js')
     <script src="http://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/tinymce.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/jquery.tinymce.min.js"></script>
-    
   <!-- toastr notifications -->
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.7/js/fileinput.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.7/themes/fa/theme.js" type="text/javascript"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/dropzone.min.js"></script>
- 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" type="text/javascript"></script>
-
-
-    {{-- <script type="text/javascript">
+       {{-- <script src="{{ asset('/vendor/laravel-filemanager/js/lfm.js') }}"></script> --}}
+    <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
+    <script> 
+         CKEDITOR.replace( 'editor1', {
+        filebrowserBrowseUrl: '{{ asset('ckfinder/ckfinder.html') }}',
+        filebrowserImageBrowseUrl: '{{ asset('ckfinder/ckfinder.html?type=Images') }}',
+        filebrowserFlashBrowseUrl: '{{ asset('ckfinder/ckfinder.html?type=Flash') }}',
+        filebrowserUploadUrl: '{{ asset('ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files') }}',
+        filebrowserImageUploadUrl: '{{ asset('ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images') }}',
+        filebrowserFlashUploadUrl: '{{ asset('ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Flash') }}'
+    } );
+    </script>
+     {{-- <script type="text/javascript">
+        $('#lfm').filemanager('image');
+     </script> --}}
+    <script type="text/javascript">
         $("#file-1").fileinput({
             theme: 'fa',
             uploadUrl: "/image-view",
@@ -279,54 +269,8 @@
             }
         });
     </script>
- --}}
 
-      <script type="text/javascript">
-       Dropzone.options.myDropzone= {
-           url: '{{ route('product.store') }}',
-           headers: {
-               'X-CSRF-TOKEN': '{!! csrf_token() !!}'
-           },
-           autoProcessQueue: true,
-           uploadMultiple: true,
-           parallelUploads: 5,
-           maxFiles: 10,
-           maxFilesize: 5,
-           acceptedFiles: ".jpeg,.jpg,.png,.gif",
-           dictFileTooBig: 'Image is bigger than 5MB',
-           addRemoveLinks: true,
-           removedfile: function(file) {
-           var name = file.name;    
-           name =name.replace(/\s+/g, '-').toLowerCase();    /*only spaces*/
-            $.ajax({
-                type: 'POST',
-                url: '{{ url('admincp/deleteImg') }}',
-                headers: {
-                     'X-CSRF-TOKEN': '{!! csrf_token() !!}'
-                 },
-                data: "id="+name,
-                dataType: 'html',
-                success: function(data) {
-                    $("#msg").html(data);
-                }
-            });
-          var _ref;
-          if (file.previewElement) {
-            if ((_ref = file.previewElement) != null) {
-              _ref.parentNode.removeChild(file.previewElement);
-            }
-          }
-          return this._updateMaxFilesReachedClass();
-        },
-        previewsContainer: null,
-        hiddenInputContainer: "body",
-       }
-    </script>
- </script>
-    <script src="{{ asset('/vendor/laravel-filemanager/js/lfm.js') }}"></script>
-     <script type="text/javascript">
-        $('#lfm').filemanager('image');
-     </script>
+
     {{-- <script type="text/javascript" src="{{ asset('js/product.js') }}"></script> --}}
     <script>
         $(function() {
@@ -346,41 +290,66 @@
                 ]
             });
 
-            // add a product
+            // add a product"
 
             $(document).on('click', '.add-modal', function() {
                 $('.modal-title').text('Add');
-                $('#addModal').modal('show');
+                $('#modal_add_abc').modal('show');
             });
             $('.modal-footer').on('click', '.add', function() {
+                var newPost = new FormData();
+                var files = document.getElementById('file-1').files;
 
-                var description = jQuery("textarea#description").val();
-                var selectedCategory = $(".category option:selected").val();
-                var selectedManufacture = $(".manufacture option:selected").val();
-                var selectedSize = $(".size option:selected").val();
-                var selectedColor = $(".color option:selected").val();
-                // var content = CKEDITOR.instances.content.getData();
-                var content = tinymce.get("content").getContent();
-                // ->getClientOriginalExtension()
-               
-                console.log($('#thumbnail').val());
+                for (var i = 0; i < files.length; i++) {
+                    newPost.append('image[]',files[i]);
 
+                }   
+
+                var detail = [];
+                $('.dynamic-added').each(function(){
+                    var number = $(this).data('number');
+                    var size_id = $('#size_'+ number +'_id').val();
+                    var color_id = $('#color_'+ number +'_id').val();
+                    var qty = $('#quantity_'+ number).val();
+                    var details = {
+                        size: size_id,
+                        color : color_id,
+                        qty : qty,
+                    };
+                    detail.push(details);
+                });
+                $('textarea.editor').ckeditor(function() {
+                    }, { toolbar : [
+                        ['Cut','Copy','Paste','PasteText','PasteFromWord','-','Print', 'SpellChecker', 'Scayt'],
+                        ['Undo','Redo'],
+                        ['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
+                        ['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'],
+                        ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+                        ['Link','Unlink','Anchor', 'Image', 'Smiley'],
+                        ['Table','HorizontalRule','SpecialChar'],
+                        ['Styles','BGColor']
+                    ], toolbarCanCollapse:false, height: '300px', scayt_sLang: 'pt_PT', uiColor : '#EBEBEB' } );
+                console.log(detail);
+                console.log(files);
+                console.log(CKEDITOR.instances["editor1"].getData());
+                editor1
+                newPost.append('details',detail);
+                newPost.append('name', $('#name').val());
+                newPost.append('origin_price', $('#origin_price').val());
+                newPost.append('description',jQuery("textarea#description").val());
+                newPost.append('content',$( 'textarea.editor' ).val());
+                newPost.append('category_id',$(".category option:selected").val());
+                newPost.append('manufacture_id',$(".manufacture option:selected").val());
+                // newPost.append('size_id',$('#size_1_id').val());
+                // console.log($('#thumbnail').val());
                 $.ajax({
                     type: 'POST',
                     url: '{{ route('product.store') }}',
-                    data: {
-                        _token: $('input[name=_token]').val(),
-                        name: $('#name').val(),
-                        image: $('.file-caption-name').val(),
-                        description: description,
-                        content:content,
-                        origin_price:$('#origin_price').val(),
-                        quantity:$('#quantity').val(),
-                        category_id : selectedCategory,
-                        manufacture_id : selectedManufacture,
-                        size_id : selectedSize,
-                        color_id : selectedColor,
-                    },
+                    data:newPost,
+                    dataType:'json',
+                    async:false,
+                    processData: false,
+                    contentType: false,
                     success: function(data) {
                         $('.errorName').addClass('hidden');
                         $('.errorDescription').addClass('hidden');
@@ -445,7 +414,7 @@
                 var selectedSize = $("#size_edit option:selected").val();
                 var selectedColor = $("#color_edit option:selected").val();
                 var url = '{{ asset('admin/product/edit') }}'+'/' + id;
-
+         
 
                 $.ajax({
                     type: 'get',
@@ -564,10 +533,10 @@
           $('#add').click(function(){  
                i++;  
 
-               var element = $('#row-1').html();
+            
               
 
-               $('#dynamic_field').append('<tr class="dynamic-added" id="'+i+'">' + element +'</tr>');   
+               $('#dynamic_field').append('<tr class="dynamic-added" id="row-'+ i +'" data-number="'+ i +'"><td><input type="number" class="form-control size name_list" id="size_'+ i +'_id"></td><td><input type="text" class="form-control color name_list" id="color_'+ i +'_id" list="list_colors"></td><td><input type="number" name="quantity[]" id="quantity_'+ i +'" placeholder="Enter your Quantity" class="form-control name_list" /></td><td><button type="button" name="remove" class="btn btn-danger btn_remove1" id="remove-tr'+i+'" data-id="'+i+'"><span class="glyphicon glyphicon-minus" id="remove-tr'+i+'"></span></button></td></tr>');   
           });  
 
             
@@ -589,80 +558,9 @@
         });  
     </script>
 
-    {{--demo --}}
-        {{-- <script type="text/javascript">
-            $('tbody').delegate('.productname','change',function(){
-                var tr=$(this).parent().parent();
-                tr.find('.qty').focus();
-            });
-            $('tbody').delegate('.qty,.price,.dis','keyup',function(){
-                var tr = $(this).parent().parent();
-                var qty = tr.find('qty').val();
-                var price = tr.find('price').val();
-                var dis = tr.find('dis').val();
-                var amount = (qty*price)-(qty*price*dis)/100;
-            }
-        </script> --}}
-
-    {{-- end demo --}}
+    
 
 
 
-
-    <script>
-
-        tinymce.init({
-        selector: '#content',
-        height: 200,
-        theme: 'modern',
-        menubar: false,
-        autosave_ask_before_unload: false,
-        plugins: [
-          "advlist autolink link image lists charmap print preview hr anchor pagebreak",
-          "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
-          "table contextmenu directionality emoticons template textcolor paste textcolor colorpicker textpattern codesample"
-        ],
-        toolbar1: "newdocument | forecolor backcolor cut copy paste bullist numlist bold italic underline strikethrough| alignleft aligncenter alignright alignjustify | styleselect formatselect fontselect fontsizeselect  | searchreplace  | outdent indent | undo redo | link unlink anchor code | insertdatetime preview | table | hr removeformat | subscript superscript | charmap emoticons | print fullscreen | codesample",
-        image_advtab: true,
-        content_css: [
-          '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
-          '//www.tinymce.com/css/codepen.min.css'
-        ],
-        setup: function (ed) {
-            ed.on('init', function (e) {
-                ed.execCommand("fontName", false, "Tahoma");
-            });
-        },
-        relative_urls: false,
-        remove_script_host : false,
-        file_browser_callback : function(field_name, url, type, win) {
-          var x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth;
-          var y = window.innerHeight|| document.documentElement.clientHeight|| document.getElementsByTagName('body')[0].clientHeight;
-
-          var cmsURL = route_prefix + 'laravel-filemaneger?field_name=' + field_name;
-          if (type == 'image') {
-            cmsURL = cmsURL + "&type=Images";
-          } else {
-            cmsURL = cmsURL + "&type=Files";
-          }
-
-          tinyMCE.activeEditor.windowManager.open({
-            file : cmsURL,
-            title : 'Image manager',
-            width : x * 0.8,
-            height : y * 0.8,
-            resizable : "yes",
-            close_previous : "no"
-          });
-        }
-       });
-
-        $('#post-create').on('keyup keypress', function(e) {
-          var keyCode = e.keyCode || e.which;
-          if (keyCode === 13) { 
-            e.preventDefault();
-            return false;
-          }
-        });
-    </script>
+    
 @endsection

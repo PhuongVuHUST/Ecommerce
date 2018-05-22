@@ -1392,7 +1392,7 @@ $j("nav").each(function(){
 });
 function submenuXposition($obj){
  var w_width = window.innerWidth;
- var o_position = $obj.offset().left;
+ // var o_position = $obj.offset().left;
  var o_width = $obj.outerWidth();
  var delta = parseInt(w_width - o_position - o_width - 25);
  

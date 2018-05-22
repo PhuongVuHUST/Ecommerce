@@ -15,7 +15,7 @@ use App\Gallary_image;
 use App\Product_Detail;
 use Yajra\Datatables\Datatables;
 
-class ProductController extends Controller
+class PostController extends Controller
 {
     /**
      * Display a listing of the resource.

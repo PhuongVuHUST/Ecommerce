@@ -25,17 +25,17 @@ Route::get('cart', function(){
 	return view('page.shoping_cart');
 });
 
-Route::get('images-upload', 'ImageController@imagesUpload');
+// Route::get('images-upload', 'ImageController@imagesUpload');
 
-Route::post('images-upload', 'ImageController@imagesUploadPost')->name('images.upload');
+// Route::post('images-upload', 'ImageController@imagesUploadPost')->name('images.upload');
 
-Route::get('image-view','ImageController@index');
-Route::post('image-view','ImageController@store');
-Route::get('image-gallery', 'ImageGalleryController@index');
-Route::post('image-gallery', 'ImageGalleryController@upload');
-Route::delete('image-gallery/{id}', 'ImageGalleryController@destroy');
-Route::resource('product', 'AdminProductController');
-Route::post('uploadImg', 'AdminUploadController@postImages');
+// Route::get('image-view','ImageController@index');
+// Route::post('image-view','ImageController@store');
+// Route::get('image-gallery', 'ImageGalleryController@index');
+// Route::post('image-gallery', 'ImageGalleryController@upload');
+// Route::delete('image-gallery/{id}', 'ImageGalleryController@destroy');
+// Route::resource('product', 'AdminProductController');
+// Route::post('uploadImg', 'AdminUploadController@postImages');
 
 
 
@@ -51,10 +51,10 @@ Route::group(['prefix'=>'admin'],function(){
     Route::post('register', 'AuthAdmin\RegisterController@register')->name('admin.signin');
 
     // Password Reset Routes...
-   Route::get('password/reset', 'AuthAdmin\ForgotPasswordController@showLinkRequestForm')->name('admin.password.request');
-    Route::post('password/email', 'AuthAdmin\ForgotPasswordController@sendResetLinkEmail')->name('admin.password.email');
-    Route::get('password/reset/{token}', 'AuthAdmin\ResetPasswordController@showResetForm')->name('admin.password.reset');
-    Route::post('password/reset', 'AuthAdmin\ResetPasswordController@reset');
+   // Route::get('password/reset', 'AuthAdmin\ForgotPasswordController@showLinkRequestForm')->name('admin.password.request');
+    // Route::post('password/email', 'AuthAdmin\ForgotPasswordController@sendResetLinkEmail')->name('admin.password.email');
+    // Route::get('password/reset/{token}', 'AuthAdmin\ResetPasswordController@showResetForm')->name('admin.password.reset');
+    // Route::post('password/reset', 'AuthAdmin\ResetPasswordController@reset');
 
     Route::middleware('admin.auth')->group(function(){
     	Route::get('/dashboard', function() {
@@ -124,8 +124,6 @@ Route::group(['prefix'=>'admin'],function(){
 
 // ----------DEMO----------------------
 
-Route::resource('posts','PostsController');
-Route::post('posts/changeStatus', array('as' => 'changeStatus', 'uses' => 'PostsController@changeStatus'));
 
 // USER
 Auth::routes();
@@ -134,3 +132,7 @@ Route::middleware('auth')->group(function(){
 });
 
 
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

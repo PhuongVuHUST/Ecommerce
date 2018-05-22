@@ -21,7 +21,7 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @ret\Illuminate\Http\Response
      */
     public function index()
     {
@@ -44,11 +44,11 @@ class ProductController extends Controller
     {
         return Datatables::of(Product::query())
         ->addColumn('action', function ($products) {
-           return '<button href="" class="show-modal btn btn-success btn-detail" data-id="'.$products->id.'" data-title="'.$products->name.'"    data-content="{{$categories->description}}">
-                                        <span class="glyphicon glyphicon-eye-open"></span> </button>
-                                        <a href="" class="edit-modal btn btn-info" data-id="'.$products->id.'" data-title="'.$products->name.'" >
-                                        <span class="glyphicon glyphicon-edit"></span> </a>
-                                        <a href="" class="delete btn btn-danger" data-id="'.$products->id.'">
+           return '<button href="" class="show-modal btn btn-success btn-xs btn-detail" data-id="'.$products->id.'" data-title="'.$products->name.'"    data-content="{{$categories->description}}">
+                                        <span class="glyphicon glyphicon-eye-open "></span> </button>
+                                        <a href="" class="edit-modal btn btn-info btn-xs" data-id="'.$products->id.'" data-title="'.$products->name.'" >
+                                        <span class="glyphicon glyphicon-edit "></span> </a>
+                                        <a href="" class="delete btn btn-danger btn-xs" data-id="'.$products->id.'">
                                         <span class="glyphicon glyphicon-trash"></span> </a>';
         })
         ->make(true);
@@ -79,6 +79,10 @@ class ProductController extends Controller
 
         $data = $request->all(); //Để lấy dữ liệu từ phía người dùng nhập vào
 
+        
+
+
+        // dd($data['content']);
 
 
         $data['slug'] = str_slug($data['name']);
@@ -92,31 +96,38 @@ class ProductController extends Controller
         $dataProduct['content'] = $data['content'];
 
         $product = Product::create($dataProduct);
-        $details = $request->detail;
 
-        $dataDetail = array();
-        
+        $details = json_decode($request->details);
+
         //$product_detail->size_id = $data['size_id']; 
         // $product_detail->product_id = $product->id; 
         //$product_detail->color_id = $data['color_id']; 
         //$product_detail->quantity = $data['quantity']; 
-        if (is_array($details) || is_object($details)){
+        if (!empty($details)){
             foreach ($details as $detail) {
+
+  
+
                 $product_detail  = new Product_Detail();
-                $size = $detail['size'];
-                $color = $detail['color'];
-                $qty = $detail['qty'];
+                $size = $detail->size;
+                $color = $detail->color;
+                $qty = $detail->qty;
                 $Size = Size::where('size',$size)->first();
                 $Color = Color::where('name',$color)->first();
-                if ($Size) {}
+                if ($Size) {
+
+                }
                 else{
                     $Size = Size::create(['size'=>$size]);
                 }
                 $size_id = $Size->id;
-                if ($Color) {}
+                if ($Color) {
+
+                }
                 else{
                     $Color = Color::create(['name'=>$color]);
                 }
+
                 $color_id = $Color->id;
                     // ---
                 $product_detail->color_id = $color_id;
@@ -127,9 +138,12 @@ class ProductController extends Controller
                 $product_detail->save();
             }
         } 
-        if($files=$request->file('image')){
-            return response()->json($files);
-            foreach($files as $key =>$file){
+
+
+
+        if($request->has('image')){
+            // return response()->json($files);
+            foreach($request->file('image') as $key =>$file){
                 $temp = [];
                 $temp['link'] = Storage::disk('local')->put('public/images', $file);
                 $temp['name'] = $request['name'];
