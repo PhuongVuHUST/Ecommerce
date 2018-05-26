@@ -26,5 +26,11 @@ class Product extends Model
     public function image(){
         return $this->hasMany('App\Gallary_image','product_id','id');
     }
+    public function img1(){
+        return $this->image()->first();
+    }
+     public function img2(){
+        return $this->image()->take(3)->get();
+    }
     
 }

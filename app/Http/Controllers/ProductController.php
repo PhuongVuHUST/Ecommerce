@@ -44,7 +44,7 @@ class ProductController extends Controller
     {
         return Datatables::of(Product::query())
         ->addColumn('action', function ($products) {
-           return '<button href="" class="show-modal btn btn-success btn-xs btn-detail" data-id="'.$products->id.'" data-title="'.$products->name.'"    data-content="{{$categories->description}}">
+           return '<button href="" class="show-modal btn btn-success btn-xs btn-detail " data-id="'.$products->id.'" data-title="'.$products->name.'"    data-content="{{$categories->description}}">
                                         <span class="glyphicon glyphicon-eye-open "></span> </button>
                                         <a href="" class="edit-modal btn btn-info btn-xs" data-id="'.$products->id.'" data-title="'.$products->name.'" >
                                         <span class="glyphicon glyphicon-edit "></span> </a>
@@ -69,8 +69,15 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-   
-    public function store(StoreProduct $request)
+    public function store(Request $request)
+    {
+        $imageName = request()->files->getClientOriginalName();
+        request()->files->move(public_path('upload'), $imageName);
+
+
+        return response()->json(['uploaded' => '/upload/'.$imageName]);
+    }
+    public function storeProduct(StoreProduct $request)
     {
        
         date_default_timezone_set("Asia/Ho_Chi_Minh");
@@ -91,6 +98,7 @@ class ProductController extends Controller
         $dataProduct['category_id'] = $data['category_id'];
         $dataProduct['manufacture_id'] = $data['manufacture_id'];
         $dataProduct['origin_price'] = $data['origin_price'];
+        $dataProduct['sale_price'] = $data['sale_price'];
         $dataProduct['slug'] = $data['slug'];
         $dataProduct['description'] = $data['description'];
         $dataProduct['content'] = $data['content'];
@@ -145,7 +153,8 @@ class ProductController extends Controller
             // return response()->json($files);
             foreach($request->file('image') as $key =>$file){
                 $temp = [];
-                $temp['link'] = Storage::disk('local')->put('public/images', $file);
+                // $temp['link'] = Storage::disk('local')->put('upload', $file);
+                $temp['link'] = $file->store('images');
                 $temp['name'] = $request['name'];
                 $temp['product_id'] = $product['id'];
                 Gallary_image::storeData($temp);

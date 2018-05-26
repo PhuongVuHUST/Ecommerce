@@ -15,28 +15,18 @@
 // Route::get('/', function(){
 // 	return view('welcome');
 // });
-Route::get('/', function(){
-	return view('page.home');
-});
+Route::get('/','PageController@getIndex')->name('home');
+Route::get('show/{id}','PageController@show')->name('edit');
+Route::post('postcart','PageController@postcart')->name('postcart');
 Route::get('shop', function(){
-	return view('page.shop');
+	return view('page.product');
+});
+Route::get('detail', function(){
+	return view('page.product_detail');
 });
 Route::get('cart', function(){
 	return view('page.shoping_cart');
 });
-
-// Route::get('images-upload', 'ImageController@imagesUpload');
-
-// Route::post('images-upload', 'ImageController@imagesUploadPost')->name('images.upload');
-
-// Route::get('image-view','ImageController@index');
-// Route::post('image-view','ImageController@store');
-// Route::get('image-gallery', 'ImageGalleryController@index');
-// Route::post('image-gallery', 'ImageGalleryController@upload');
-// Route::delete('image-gallery/{id}', 'ImageGalleryController@destroy');
-// Route::resource('product', 'AdminProductController');
-// Route::post('uploadImg', 'AdminUploadController@postImages');
-
 
 
 Route::group(['prefix'=>'admin'],function(){
@@ -51,10 +41,10 @@ Route::group(['prefix'=>'admin'],function(){
     Route::post('register', 'AuthAdmin\RegisterController@register')->name('admin.signin');
 
     // Password Reset Routes...
-   // Route::get('password/reset', 'AuthAdmin\ForgotPasswordController@showLinkRequestForm')->name('admin.password.request');
-    // Route::post('password/email', 'AuthAdmin\ForgotPasswordController@sendResetLinkEmail')->name('admin.password.email');
-    // Route::get('password/reset/{token}', 'AuthAdmin\ResetPasswordController@showResetForm')->name('admin.password.reset');
-    // Route::post('password/reset', 'AuthAdmin\ResetPasswordController@reset');
+   Route::get('password/reset', 'AuthAdmin\ForgotPasswordController@showLinkRequestForm')->name('admin.password.request');
+    Route::post('password/email', 'AuthAdmin\ForgotPasswordController@sendResetLinkEmail')->name('admin.password.email');
+    Route::get('password/reset/{token}', 'AuthAdmin\ResetPasswordController@showResetForm')->name('admin.password.reset');
+    Route::post('password/reset', 'AuthAdmin\ResetPasswordController@reset');
 
     Route::middleware('admin.auth')->group(function(){
     	Route::get('/dashboard', function() {
@@ -67,7 +57,9 @@ Route::group(['prefix'=>'admin'],function(){
 				Route::get('anydata','ProductController@anydata')->name('product.anydata');
 				Route::get('show/{id}','ProductController@show')->name('product.show');
 				Route::get('{id_product}/anydataListProduct','ProductController@anydataListProduct')->name('product.anydataListProduct');
-				Route::post('store','ProductController@store')->name('product.store');
+				Route::post('/image-view','ProductController@store');
+				// Route::post('store','ProductController@store');
+				Route::post('store','ProductController@storeProduct')->name('product.store');
 				Route::get('edit/{id}','ProductController@edit')->name('product.edit');
 				Route::post('update/{id}','ProductController@update')->name('product.update');
 				Route::delete('delete/{id}','ProductController@destroy')->name('product.delete');
@@ -96,12 +88,12 @@ Route::group(['prefix'=>'admin'],function(){
 				Route::delete('delete/{id}','ManufactureController@destroy')->name('manufacture.delete');
 
 			});
-			// ----------------COLOR------------
+			// ----------------color------------
 			Route::group(['prefix'=>'color'],function(){
 				Route::get('index','ColorController@index')->name('color.index');
 				Route::get('anydata','ColorController@anydata')->name('color.anydata');
 				Route::get('show/{id}','ColorController@show')->name('color.show');
-				Route::get('{id_color}/anydataListProduct','ColorController@anydataListProduct')->name('color.anydataListProduct');
+				Route::get('{id_slide}/anydataListProduct','ColorController@anydataListProduct')->name('color.anydataListProduct');
 				Route::post('store','ColorController@store')->name('color.store');
 				Route::get('edit/{id}','ColorController@edit')->name('color.edit');
 				Route::post('update/{id}','ColorController@update')->name('color.update');
@@ -112,11 +104,22 @@ Route::group(['prefix'=>'admin'],function(){
 				Route::get('index','SizeController@index')->name('size.index');
 				Route::get('anydata','SizeController@anydata')->name('size.anydata');
 				Route::get('show/{id}','SizeController@show')->name('size.show');
-				Route::get('{id_color}/anydataListProduct','SizeController@anydataListProduct')->name('size.anydataListProduct');
+				Route::get('{id_slide}/anydataListProduct','SizeController@anydataListProduct')->name('size.anydataListProduct');
 				Route::post('store','SizeController@store')->name('size.store');
 				Route::get('edit/{id}','SizeController@edit')->name('size.edit');
 				Route::post('update/{id}','SizeController@update')->name('size.update');
 				Route::delete('delete/{id}','SizeController@destroy')->name('size.delete');
+			});
+			     // SLIDE
+			Route::group(['prefix'=>'slide'],function(){
+				Route::get('index','SlideController@index')->name('slide.index');
+				Route::get('anydata','SlideController@anydata')->name('slide.anydata');
+				Route::get('show/{id}','SlideController@show')->name('slide.show');
+				Route::get('{id_slide}/anydataListProduct','SlideController@anydataListProduct')->name('slide.anydataListProduct');
+				Route::post('store','SlideController@store')->name('slide.store');
+				Route::get('edit/{id}','SlideController@edit')->name('slide.edit');
+				Route::post('update/{id}','SlideController@update')->name('slide.update');
+				Route::delete('delete/{id}','SlideController@destroy')->name('slide.delete');
 			});
     });
 		

@@ -36,11 +36,11 @@ class ColorController extends Controller
         return Datatables::of(Color::query())
         ->addColumn('action', function ($colors) {
           
-            return '<a href="" class="show-modal btn btn-success btn-detail" data-id="'.$colors->id.'">
+            return '<a href="" class="show-modal btn btn-success btn-detail btn-xs" data-id="'.$colors->id.'">
                                         <span class="glyphicon glyphicon-eye-open"></span> </a>
-                                        <a href="" class="edit-modal btn btn-info" data-id="'.$colors->id.'" >
-                                        <span class="glyphicon glyphicon-edit"></span> </a>
-                                        <a href="" class="delete btn btn-danger" data-id="'.$colors->id.'" >
+                                        <a href="" class="edit-modal btn btn-info btn-xs" data-id="'.$colors->id.'" >
+                                        <span class="glyphicon glyphicon-edit "></span> </a>
+                                        <a href="" class="delete btn btn-danger btn-xs" data-id="'.$colors->id.'" >
                                         <span class="glyphicon glyphicon-trash"></span> </a>';
         })
         ->rawColumns(['code','action'])

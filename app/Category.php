@@ -26,6 +26,12 @@ class Category extends Model
     public function product(){
     	return $this->hasMany('App\Product','category_id','id');
     }
+    public function productFirst(){
+        return $this->product()->take(2)->get();
+    }
+    public function productSecond(){
+        return $this->product()->take(3)->get();
+    }
 
     
 }

@@ -36,11 +36,11 @@ class SizeController extends Controller
         return Datatables::of(Size::query())
         ->addColumn('action', function ($sizes) {
           
-            return '<a href="" class="show-modal btn btn-success btn-detail" data-id="'.$sizes->id.'">
+            return '<a href="" class="show-modal btn btn-success btn-detail btn-xs" data-id="'.$sizes->id.'">
                                         <span class="glyphicon glyphicon-eye-open"></span> </a>
-                                        <a href="" class="edit-modal btn btn-info" data-id="'.$sizes->id.'" >
+                                        <a href="" class="edit-modal btn btn-info btn-xs" data-id="'.$sizes->id.'" >
                                         <span class="glyphicon glyphicon-edit"></span> </a>
-                                        <a href="" class="delete btn btn-danger" data-id="'.$sizes->id.'" >
+                                        <a href="" class="delete btn btn-danger btn-xs" data-id="'.$sizes->id.'" >
                                         <span class="glyphicon glyphicon-trash"></span> </a>';
         })
         ->rawColumns(['size','action'])

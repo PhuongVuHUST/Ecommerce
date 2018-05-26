@@ -35,11 +35,11 @@ class ManufactureController extends Controller
         return Datatables::of(Manufacture::query())
         ->addColumn('action', function ($manufactures) {
           
-            return '<a href="" class="show-modal btn btn-success btn-detail" data-id="'.$manufactures->id.'" >
+            return '<a href="" class="show-modal btn btn-success btn-detail btn-xs" data-id="'.$manufactures->id.'" >
                                         <span class="glyphicon glyphicon-eye-open"></span> </a>
-                                        <a href="" class="edit-modal btn btn-info" data-id="'.$manufactures->id.'" >
+                                        <a href="" class="edit-modal btn btn-info btn-xs" data-id="'.$manufactures->id.'" >
                                         <span class="glyphicon glyphicon-edit"></span> </a>
-                                        <a href="" class="delete btn btn-danger"  data-id="'.$manufactures->id.'" >
+                                        <a href="" class="delete btn btn-danger btn-xs"  data-id="'.$manufactures->id.'" >
                                         <span class="glyphicon glyphicon-trash"></span> </a>';
         })
         ->rawColumns(['description','action'])

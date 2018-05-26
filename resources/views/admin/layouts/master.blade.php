@@ -364,29 +364,34 @@
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
-        <li class="active treeview">
+        <li class="active ">
           <a href="{{ route('category.index') }}">
             <i class="fa fa-dashboard"></i> <span>Category Management</span>
             <span class="pull-right-container">
             </span>
           </a>
-          <a href="{{ route('category.index') }}">
+          <a href="{{ route('manufacture.index') }}">
             <i class="fa fa-dashboard"></i> <span>Manufacture Management</span>
             <span class="pull-right-container">
             </span>
           </a>
-          <a href="{{ route('category.index') }}">
+          <a href="{{ route('color.index') }}">
             <i class="fa fa-dashboard"></i> <span>Color Management</span>
             <span class="pull-right-container">
             </span>
           </a>
-           <a href="{{ route('category.index') }}">
+           <a href="{{ route('product.index') }}">
             <i class="fa fa-dashboard"></i> <span>Product Management</span>
             <span class="pull-right-container">
             </span>
           </a>
-           <a href="{{ route('category.index') }}">
+           <a href="{{ route('size.index') }}">
             <i class="fa fa-dashboard"></i> <span>Size Management</span>
+            <span class="pull-right-container">
+            </span>
+          </a>
+           <a href="{{ route('slide.index') }}">
+            <i class="fa fa-dashboard"></i> <span>Slide Management</span>
             <span class="pull-right-container">
             </span>
           </a>

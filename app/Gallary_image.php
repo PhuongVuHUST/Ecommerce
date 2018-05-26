@@ -11,7 +11,7 @@ class Gallary_image extends Model
         'link', 'product_id','name' 
     ];
     public function product(){
-    	return $this->belongsTo()('App\Product','product_id','id');
+    	return $this->belongsTo()('App\Product','id','product_id');
     }
 
     public static function storeData($data) {

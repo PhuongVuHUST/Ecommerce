@@ -165,6 +165,8 @@ return [
         Yajra\Datatables\DatatablesServiceProvider::class,
 
         // Yajra\DataTables\HtmlServiceProvider::class
+        App\Providers\CommonProvider::class,
+        Gloudemans\Shoppingcart\ShoppingcartServiceProvider::class
 
     ],
 
@@ -214,8 +216,10 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'Cart' => Gloudemans\Shoppingcart\Facades\Cart::class,
 
         'Datatables' => Yajra\Datatables\Facades\Datatables::class,
+        'Common' => App\Helpers\Common::class,
 
     ],
 

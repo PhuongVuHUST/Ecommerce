@@ -57,6 +57,14 @@
                                             @endif
                                         </div>
                                         <div class="form-group">
+                                            <label for="">Sale Price (<span style="color: red">*</span>)</label>
+                                            <input type="number" class="form-control" id="sale_price" placeholder="Sale Price" name="origin_price">
+                                          
+                                            @if ($errors->has('sale_price'))
+                                                <span class="errors">{{$errors->first('sale_price')}}</span>
+                                            @endif
+                                        </div>
+                                        <div class="form-group">
                                             <label for="">Description (<span style="color: red">*</span>)</label>
                                             <textarea class="form-control" name="description" id="description" cols="30" rows="4" placeholder="Description"></textarea> 
                                              @if ($errors->has('description'))
@@ -323,6 +331,7 @@
                 newPost.append('details',JSON.stringify(detail));
                 newPost.append('name', $('#name').val());
                 newPost.append('origin_price', $('#origin_price').val());
+                newPost.append('sale_price', $('#sale_price').val());
                 newPost.append('description',jQuery("textarea#description").val());
                 newPost.append('content',CKEDITOR.instances["editor1"].getData());
                 newPost.append('category_id',$(".category option:selected").val());
@@ -378,7 +387,7 @@
                     columns: [ 
                         { data: 'id', name: 'id' },
                         { data: 'size.size', name: 'size' },
-                        { data: 'color.code', name: 'color' },
+                        { data: 'color', name: 'color' },
                         { data: 'quantity', name: 'quantity' },
                         { data: 'created_at', name: 'created_at' },
                     ]

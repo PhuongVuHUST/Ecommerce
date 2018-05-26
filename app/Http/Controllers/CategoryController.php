@@ -35,11 +35,11 @@ class CategoryController extends Controller
         return Datatables::of(Category::query())
         ->addColumn('action', function ($categories) {
           
-            return '<a href="" class="show-modal btn btn-success btn-detail" data-id="'.$categories->id.'" data-title="'.$categories->name.'"    data-content="{{$categories->description}}">
+            return '<a href="" class="show-modal btn btn-success btn-detail btn-xs" data-id="'.$categories->id.'" data-title="'.$categories->name.'"    data-content="{{$categories->description}}">
                                         <span class="glyphicon glyphicon-eye-open"></span> </a>
-                                        <a href="" class="edit-modal btn btn-info" data-id="'.$categories->id.'" data-title="'.$categories->name.'" data-content="{{$categories->description}}">
+                                        <a href="" class="edit-modal btn btn-info btn-xs" data-id="'.$categories->id.'" data-title="'.$categories->name.'" data-content="{{$categories->description}}">
                                         <span class="glyphicon glyphicon-edit"></span> </a>
-                                        <a href="" class="delete btn btn-danger" data-id="'.$categories->id.'">
+                                        <a href="" class="delete btn btn-danger btn-xs" data-id="'.$categories->id.'">
                                         <span class="glyphicon glyphicon-trash"></span> </a>';
         })
         ->rawColumns(['description','action'])

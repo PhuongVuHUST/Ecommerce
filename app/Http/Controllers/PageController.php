@@ -4,6 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Category;
+use App\Slide;
+use App\Product;
+use App\Color;
+// use App\Cart;
+use App\Product_Detail;
 
 class PageController extends Controller
 {
@@ -12,15 +17,15 @@ class PageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getProduct()
+    public function getIndex()
     {
+        $slides = Slide::all();
+        $categories = Category::all();
+        $products = Product::all();
+        $colors = Color::all();
         
+        return view('page.home',compact('slides','categories','colors'));
     }
-     public function getCategory()
-    {
-        
-    }
-    
 
     /**
      * Show the form for creating a new resource.
@@ -51,7 +56,21 @@ class PageController extends Controller
      */
     public function show($id)
     {
-        //
+        $product=Product::find($id);
+        $product_detail=Product_Detail::where('product_id','=',$id)->with('code')->with('size')->get();
+        // $colors=Color::where('product_id','=','id')->get();
+        // $sizes=Size::where('product_id','=','id')->get();
+        $images= $product->image()->first();
+        // $product_detail=$product->product_detail();
+
+        return response()->json([
+            'product'=>$product,
+            'product_detail'=>$product_detail,
+            // 'colors'=>$colors,
+            // 'sizes'=>$sizes,
+            'images'=>$images,
+            // 'product_detail'=>$product_detail,
+        ]);
     }
 
     /**
@@ -72,9 +91,9 @@ class PageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function postcart(Request $request)
     {
-        //
+        Cart::add( $request['']);
     }
 
     /**

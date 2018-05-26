@@ -17,6 +17,6 @@ class Product_Detail extends Model
         return $this->hasMany('App\Color','id','color_id');
     }
     public function size(){
-        return $this->hasOne('App\Size','id','size_id');
+        return $this->hasMany('App\Size','id','size_id');
     }
 }
